@@ -25,7 +25,7 @@ AiPlayer(size_t id, size_t money)
 Command playTurn();
 
 private:
-enum HandGoodness {BAD, AVERAGE, GOOD, EXCELLENT};
+enum HandGoodness {BAD, AVERAGE, GOOD, EXCELLENT, C2C_IS_0};
 enum RiskLevel {LEVEL0, LEVEL1, LEVEL2, LEVEL3};
 
 /*

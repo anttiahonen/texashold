@@ -15,36 +15,68 @@ Command AiPlayer::playTurn()
 	}
 
 	Command move = FOLD;
+	int ranValue = rand() % 100;
 
 	HandGoodness hg = evaluateHand();
 
-	RiskLevel risk = evaluateRisk();
-
 	// Choose move
+	
+	Game* game = Game::getInstance();
+	size_t callCost = game->getCallCost();
+	size_t pot = game->getPot();
+	std::vector<int> cvv = calculateHandValue(getCards());
+	std::vector<int> hvv = calculateHandValue(getHand());
+	size_t activePlayers = game->getActivePlayers().size();
+	std::vector<double> oddsv = calculateOdds(cvv[0], activePlayers, hvv[0]);
+	double vp = oddsv[0]; // Victory probalility
+	double potOdds = callCost / (pot + callCost);
+	double RoR = (vp/100) / potOdds; //Rate of Return
+
+	std::cout << "VP: " << vp/100 << "RoR: " << RoR << "ranValue: " << ranValue << " " << " potOdds: " << potOdds << " " << "HG: " << hg << " ";
+
 	switch (hg)
 	{
 	case BAD:
-
+		if (ranValue < 95) {
+			move = FOLD;
+		}
+		else {
+			move = RAISE; //BLUFF
+		}
 		//std::cout << "hg: bad";
-		if (risk <= LEVEL0)
-			move = CALL;
 		break;
 	case AVERAGE:
 		//std::cout << "hg: average";
-		if (risk <= LEVEL1)
+		if (ranValue < 80) {
+			move = FOLD;
+		}
+		if (ranValue < 85) {
 			move = CALL;
+		}
+		else {
+			move = RAISE;
+		}
 		break;
 	case GOOD:
 		//std::cout << "hg: good";
-		if (risk <= LEVEL1)
-			move = RAISE;
-		else if (risk <= LEVEL2)
+		if (ranValue < 60) {
 			move = CALL;
+		}
+		else {
+			move = RAISE;
+		}
 		break;
 
 	case EXCELLENT:
-		//std::cout << "hg: excellent";
-		move = RAISE;
+		if (ranValue < 30) {
+			move = CALL;
+		}
+		else {
+			move = RAISE;
+		}
+		break;
+	case C2C_IS_0:
+		move = CALL;
 		break;
 	default:
 		// execution should never reach this point.
@@ -93,13 +125,19 @@ Command AiPlayer::playTurn()
 // http://fi.pokernews.com/poker-tools/poker-odds-calculator.htm
 AiPlayer::HandGoodness AiPlayer::evaluateHand()
 {
-	size_t activePlayers = Game::getInstance()->getActivePlayers().size();
+	Game* game = Game::getInstance();
+	size_t callCost = game->getCallCost();
+	size_t pot = game->getPot();
+	size_t activePlayers = game->getActivePlayers().size();
 	std::vector<int> cvv = calculateHandValue(getCards());
 	std::vector<int> hvv = calculateHandValue(getHand());
 	std::vector<double> oddsv = calculateOdds(cvv[0], activePlayers, hvv[0]);
 	double vp = oddsv[0]; // Victory probalility
-
-//	std::cout << "AP: " << activePlayers << " VP: " << vp << " ";
+	double potOdds = callCost / (pot + callCost);
+	if (potOdds == 0) {
+		return C2C_IS_0; //Cost to call is zero.
+	}
+	double RoR = vp / potOdds; //Rate of Return
 
 	switch (getCards().size())
 	{
@@ -107,29 +145,30 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand()
 		switch (activePlayers)
 		{
 		case 2:
-			if (vp >= 82.5) return EXCELLENT;
-			if (vp >= 60.0)	return GOOD;
-			if (vp >= 45.0)	return AVERAGE;
-			return BAD;
+			if (RoR < 0.8) return BAD;
+			if (RoR < 1.0)	return AVERAGE;
+			if (RoR < 1.3)	return GOOD;
+			if (RoR >= 1.3)	return EXCELLENT;
+			return C2C_IS_0;
 		case 3:
-			if (vp >= 54.5) return EXCELLENT;
-			if (vp >= 40.0)	return GOOD;
-			if (vp >= 30.0)	return AVERAGE;
+			if (RoR >= 54.5) return EXCELLENT;
+			if (RoR >= 40.0)	return GOOD;
+			if (RoR >= 30.0)	return AVERAGE;
 			return BAD;
 		case 4:
-			if (vp >= 40.5) return EXCELLENT;
-			if (vp >= 30.0)	return GOOD;
-			if (vp >= 22.5)	return AVERAGE;
+			if (RoR >= 40.5) return EXCELLENT;
+			if (RoR >= 30.0)	return GOOD;
+			if (RoR >= 22.5)	return AVERAGE;
 			return BAD;
 		case 5:
-			if (vp >= 32.0) return EXCELLENT;
-			if (vp >= 24.0)	return GOOD;
-			if (vp >= 18.0)	return AVERAGE;
+			if (RoR >= 32.0) return EXCELLENT;
+			if (RoR >= 24.0)	return GOOD;
+			if (RoR >= 18.0)	return AVERAGE;
 			return BAD;
 		case 6:
-			if (vp >= 26.0) return EXCELLENT;
-			if (vp >= 20.0)	return GOOD;
-			if (vp >= 15.0)	return AVERAGE;
+			if (RoR >= 26.0) return EXCELLENT;
+			if (RoR >= 20.0)	return GOOD;
+			if (RoR >= 15.0)	return AVERAGE;
 			return BAD;
 		}
 	case 5: // Flop
@@ -220,50 +259,4 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand()
 	std::cout << "Hand: " << hand.size() << std::endl;
 	std::cout << "Cards: " << getCards().size() << std::endl;
 	throw std::logic_error( "AI's evaluateHand() method encountered a problem." );
-}
-
-AiPlayer::RiskLevel AiPlayer::evaluateRisk()
-{
-	Game* game = Game::getInstance();
-	std::vector<Player*> players = game->getPlayers();
-	size_t level = 1;
-	size_t callCost = game->getCallCost();
-
-	// callCost == 0 means call is actually check, which is risk free.
-	// money == 0 means we are all in, and thus can stay in the game 
-	// without any additional risk.
-	if (callCost == 0 || money == 0)
-	{	
-//		std::cout << "RL:" << 0 << " ";
-		return LEVEL0;
-	}
-	
-	// Check how many players have raised and increase risk level accordingly.
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		if (players[i]->getLastCommand() == RAISE && players[i]->getId() != id)
-			level++;
-	}
-
-	// Increase risk level if we are running out of money
-	if (callCost >= money / 2)
-		level++;
-	if (callCost >= money)
-		level++;
-
-	// If we have raised last turn, then be more bold this turn.
-	if (lastCommand == RAISE && level > 2)
-		level = 2;
-
-//	std::cout << "RL: " << level << " ";
-
-	switch (level)
-	{
-	case 1:
-		return LEVEL1;
-	case 2:
-		return LEVEL2;
-	default:
-		return LEVEL3;
-	}
 }
