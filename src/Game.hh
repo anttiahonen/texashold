@@ -161,7 +161,7 @@ public:
 	 */
 	void resetDeck();
 
-private:
+public:
 	Game(size_t numOfPlayers =2, size_t moneyAmount =5000, size_t smallBlind =50, size_t bigBlind =100);
 	static Game* instance;
 
@@ -182,6 +182,7 @@ private:
 	size_t bigBlindId;
 
 	size_t pot;
+
 };
 
 #endif

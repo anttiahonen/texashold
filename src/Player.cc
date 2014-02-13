@@ -31,6 +31,7 @@ void Player::setBet(size_t newbet)
 		bet = 0;
 		return;
 	}
+	//std:: cout << newbet << " is newbet and bet is " << bet << "\n";
 
 	if (newbet < bet && newbet != 0)
 		throw std::logic_error( "newbet < bet" );
@@ -38,8 +39,11 @@ void Player::setBet(size_t newbet)
 	if (delta > money)
 		delta = money;
 	money -= delta;
+	Game* game = Game::getInstance();
+	game->setPot(game->getPot() + delta);
 	bet += delta;
 }
+
 
 /*
  * Raise / bet
@@ -54,11 +58,10 @@ void Player::raise()
 		return;
 	}
 
-	setBet(game->getRaiseCost());
-	game->setHighestRaise(getBet());
+	setBet(getBet() + game->getRaiseCost());
+	game->setHighestRaise(200);
 	lastCommand = RAISE;
 	GameUI::getInstance()->printAction(this);
-//	printAction(RAISE);
 }
 
 /*
@@ -67,13 +70,13 @@ void Player::raise()
 void Player::call()
 {
 	Game* game = Game::getInstance();
-	setBet(game->getCallCost());
+	setBet(game->getCallCost() + getBet());
+	game->setHighestRaise(0);
 	if (callWasCheck)
 		lastCommand = CHECK;
 	else
 		lastCommand = CALL;
 	GameUI::getInstance()->printAction(this);
-//	printAction(CALL);
 }
 
 /*
@@ -84,7 +87,6 @@ void Player::fold()
 	lastCommand = FOLD;
 	folded = true;
 	GameUI::getInstance()->printAction(this);
-//	printAction(FOLD);
 }
 
 std::string Player::getName()
@@ -95,45 +97,3 @@ std::string Player::getName()
 	std::getline(ss, str);
 	return str;
 }
-
-/*
-void Player::printAction(Command com)
-{
-	std::stringstream ss;
-
-	if (id == 0)
-		ss << "Human P";
-	else
-		ss << "Player " << id;
-
-	switch (com)
-	{
-	case RAISE:
-		ss << " raises";
-		break;
-	case CALL:
-		if (money == 0)
-			ss << " is all in";
-		else
-			if (callWasCheck)
-				ss << " checks";
-			else
-				ss << " calls";
-		break;
-	case FOLD:
-		ss << " folds";
-		break;
-	case NONE:
-		ss << " has folded";
-	}	
-
-	ss << " ($" << bet << "/$" << money << ")";
-
-	std::string str;
-	std::getline(ss, str);
-	GameUI::getInstance()->print(str);
-
-	// Pause for second
-	sleep(2);
-}*/
-

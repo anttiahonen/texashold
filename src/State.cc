@@ -21,27 +21,16 @@ void State::executeRound()
 	{
 		if (id == endId && !first) // When we hit endId we've gone through one round
 		{
-			size_t bet = game->getCallCost();
-			bool check = true;
-
-			for (size_t i = 0; i < players.size(); i++)
-			{
-				if (players[i]->isActive())
-					if (players[i]->getBet() != bet && players[i]->getMoney() != 0)
-						check = false;
-			}
-
-			if (check)
-				break;
+			break;
 		}
 
 		first = false;
 
 		lastCommand = game->getPlayerById(id)->playTurn(); // Every player plays his turn
 
-		if (lastCommand ==  RAISE)
+		if (lastCommand ==  RAISE) {
 			endId = id;
-
+		}
 		if (game->getActivePlayers().size() == 1)
 		{
 			StateMachine::getInstance()->changeState(Win::getInstance());

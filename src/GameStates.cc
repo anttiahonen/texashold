@@ -38,6 +38,7 @@ PreFlop* PreFlop::getInstance()
 void PreFlop::enter()
 {
 	Game* game = Game::getInstance();
+	game->setPot(0);
 
 	roundCounter++;
 
@@ -74,7 +75,6 @@ void PreFlop::enter()
 
 	game->getPlayerById(game->getBigBlindId())->setBet(game->getBigBlind());
 
-	game->setPot(0);
 }
 
 /*
@@ -103,7 +103,7 @@ void PreFlop::exit()
 
 	for (size_t i = 0; i < players.size(); i++)
 	{
-		game->setPot(game->getPot() + players[i]->getBet()); // this is collecting the bets and adding them to the pot
+		//game->setPot(game->getPot() + players[i]->getBet());  this is collecting the bets and adding them to the pot
 
 		players[i]->setBet(0);
 		players[i]->resetLastCommand();
@@ -167,7 +167,6 @@ void Flop::exit()
 
 	for (size_t i = 0; i < players.size(); i++)
 	{
-		game->setPot(game->getPot() + players[i]->getBet());
 
 		players[i]->setBet(0);
 		players[i]->resetLastCommand();
@@ -228,8 +227,6 @@ void Turn::exit()
 
 	for (size_t i = 0; i < players.size(); i++)
 	{
-		game->setPot(game->getPot() + players[i]->getBet());
-
 		players[i]->setBet(0);
 		players[i]->resetLastCommand();
 	}
@@ -287,7 +284,6 @@ void River::exit()
 
 	for (size_t i = 0; i < players.size(); i++)
 	{
-		game->setPot(game->getPot() + players[i]->getBet());
 
 		players[i]->setBet(0);
 		players[i]->resetLastCommand();
