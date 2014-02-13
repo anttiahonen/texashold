@@ -184,10 +184,7 @@ private:
 
 	size_t pot;
 
-<<<<<<< HEAD
 	bool botsOnly;
-=======
->>>>>>> origin/implement_RoR
 };
 
 #endif
