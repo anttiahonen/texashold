@@ -163,6 +163,7 @@ public:
 
 private:
 	Game(size_t numOfPlayers =2, size_t moneyAmount =5000, size_t smallBlind =50, size_t bigBlind =100, bool botsOnly =false);
+
 	static Game* instance;
 
 	void updateBlindIds();
@@ -183,7 +184,10 @@ private:
 
 	size_t pot;
 
+<<<<<<< HEAD
 	bool botsOnly;
+=======
+>>>>>>> origin/implement_RoR
 };
 
 #endif

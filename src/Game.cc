@@ -7,6 +7,7 @@
 Game* Game::instance;
 
 Game::Game(size_t numOfPlayers, size_t moneyAmount,size_t smallBlind, size_t bigBlind, bool botsOnly) : smallBlind(smallBlind), bigBlind(bigBlind), highestRaise(0), botsOnly(false)
+
 {
 	srand ( time(NULL) );
 	deck = new Deck();
@@ -133,14 +134,15 @@ size_t Game::getNextPlayerId(size_t id) const
 	throw std::logic_error( "Invalid player ID" );
 }
 
-size_t Game::getCallCost() const
-{
-	if (highestRaise == 0)
-	{
-		if (StateMachine::getInstance()->getCurrentState() == PreFlop::getInstance())
+size_t Game::getCallCost() const {
+	if (highestRaise == 0) {
+		if (getPot() < bigBlind) {
 			return bigBlind;
-		else
-			return 0;
+		}
+		if (getPot() == (bigBlind + smallBlind)) {
+			return smallBlind;
+		}
+		return highestRaise;
 	}
 	return highestRaise;
 }
@@ -148,14 +150,15 @@ size_t Game::getCallCost() const
 size_t Game::getRaiseCost() const
 {
 	size_t raise = highestRaise * 2;
-	if (highestRaise == 0)
-		raise = bigBlind * 2;
+
+	if (highestRaise == 0) {
+		raise = bigBlind * 2 + getCallCost();
+	}	
 
 	return raise;
 }
 
-void Game::setHighestRaise(size_t raise)
-{
+void Game::setHighestRaise(size_t raise) {
 	if (raise > highestRaise)
 		highestRaise = raise;
 }

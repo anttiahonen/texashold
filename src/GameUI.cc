@@ -470,8 +470,8 @@ Command GameUI::playerActionPrompt()
 	std::cout << "\nYour status\n***********\n";
 	std::cout << "Money: $" << player->getMoney() << "\tBet: $" << player->getBet() << std::endl;
 
-	size_t raiseCost = game->getRaiseCost() - player->getBet();
-	size_t callCost = game->getCallCost() - player->getBet();
+	size_t raiseCost = game->getRaiseCost();
+	size_t callCost = game->getCallCost();
 
 	Command com;
 

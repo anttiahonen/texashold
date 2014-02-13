@@ -26,18 +26,11 @@ Command playTurn();
 
 private:
 enum HandGoodness {BAD, AVERAGE, GOOD, EXCELLENT};
-enum RiskLevel {LEVEL0, LEVEL1, LEVEL2, LEVEL3};
 
 /*
  * Determines how good our hand is approximately.
  */
 HandGoodness evaluateHand();
-
-/*
- * Estimates how risky it is not to fold based on how much we need to pay to
- * stay in game and how many players have raised.
- */
-RiskLevel evaluateRisk();
 
 };
 
