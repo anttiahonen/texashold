@@ -6,17 +6,26 @@
 
 Game* Game::instance;
 
-Game::Game(size_t numOfPlayers, size_t moneyAmount,size_t smallBlind, size_t bigBlind) : smallBlind(smallBlind), bigBlind(bigBlind), highestRaise(0)
+Game::Game(size_t numOfPlayers, size_t moneyAmount,size_t smallBlind, size_t bigBlind, bool botsOnly) : smallBlind(smallBlind), bigBlind(bigBlind), highestRaise(0), botsOnly(false)
 {
 	srand ( time(NULL) );
 	deck = new Deck();
 	deck->shuffle();
-	players.push_back(new HumanPlayer(0, moneyAmount));
-	for (size_t i = 1; i < numOfPlayers; i++)
-	{
-		// id 0 for human, AI 1->numOfPlayers
-		Player* p = new AiPlayer(i, moneyAmount);
-		players.push_back(p);
+	if (botsOnly == false){
+		players.push_back(new HumanPlayer(0, moneyAmount));
+		for (size_t i = 1; i < numOfPlayers; i++)
+		{
+			// id 0 for human, AI 1->numOfPlayers
+			Player* p = new AiPlayer(i, moneyAmount);
+			players.push_back(p);
+		}
+	} else {
+		for (size_t i = 0; i < numOfPlayers; i++)
+		{
+			std::cout << "creating ai player for bots" << std::endl;
+			Player* p = new AiPlayer(i, moneyAmount);
+			players.push_back(p);
+		}
 	}
 	dealerId = players[rand() % players.size()]->getId();
 	updateDealer();
@@ -29,11 +38,11 @@ Game* Game::getInstance()
 	return instance;
 }
 
-Game* Game::startGame(size_t numOfPlayers, size_t moneyAmount, size_t smallBlind, size_t bigBlind)
+Game* Game::startGame(size_t numOfPlayers, size_t moneyAmount, size_t smallBlind, size_t bigBlind, bool botsOnly)
 {
 	if(instance)
 		delete instance;
-	instance = new Game(numOfPlayers, moneyAmount, smallBlind, bigBlind);
+	instance = new Game(numOfPlayers, moneyAmount, smallBlind, bigBlind, botsOnly);
 	return instance;
 }
 

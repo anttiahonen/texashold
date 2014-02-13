@@ -27,7 +27,6 @@ PreFlop* PreFlop::getInstance()
 {
 	if (!instance)
 		instance = new PreFlop;
-
 	return instance;
 }
 
@@ -428,7 +427,12 @@ void End::execute()
 		GameUI::getInstance()->printWinner(players[0]->getId());
 
 		GameUI::getInstance()->printExit();
+
 	}
+	std::cout << "change to newgame" << std::endl;
+	PreFlop::getInstance()->roundCounter = 0;
+	StateMachine::getInstance()->changeState(PreFlop::getInstance());
+
 }
 
 /*
@@ -436,7 +440,7 @@ void End::execute()
  */
 void End::exit()
 {
-	
+
 }
 
 

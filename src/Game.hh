@@ -19,7 +19,7 @@ public:
 	/*
 	 * Starts a new game with given parameters.
 	 */
-	static Game* startGame(size_t numOfPlayers, size_t moneyAmount, size_t smallBlind, size_t bigBlind);
+	static Game* startGame(size_t numOfPlayers, size_t moneyAmount, size_t smallBlind, size_t bigBlind, bool botsOnly);
 
 	/*
 	 * Returns a player with given ID, or NULL if no such player exists.
@@ -162,7 +162,7 @@ public:
 	void resetDeck();
 
 private:
-	Game(size_t numOfPlayers =2, size_t moneyAmount =5000, size_t smallBlind =50, size_t bigBlind =100);
+	Game(size_t numOfPlayers =2, size_t moneyAmount =5000, size_t smallBlind =50, size_t bigBlind =100, bool botsOnly =false);
 	static Game* instance;
 
 	void updateBlindIds();
@@ -182,6 +182,8 @@ private:
 	size_t bigBlindId;
 
 	size_t pot;
+
+	bool botsOnly;
 };
 
 #endif

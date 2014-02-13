@@ -118,6 +118,18 @@ void GameUI::printStart() const
 	std::cout << start << std::endl;
 }
 
+void GameUI::printBots() const
+{
+	std::string start = "Do you want a bot vs bot headup match? Please type Y / N";
+	std::cout << start << std::endl;
+}
+
+void GameUI::printBotGames() const
+{
+	std::string start = "How many games to play?";
+	std::cout << start << std::endl;
+}
+
 void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t pot, std::vector<Card*> cards, size_t dealer, size_t sb, size_t bb) const
 { 
 	std::cout << std::endl;
@@ -189,7 +201,7 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 
 	std::cout << std::endl;
 
-	sleep(2);
+	sleep(0);
 }
 
 void GameUI::printExit() const
@@ -304,7 +316,7 @@ void GameUI::printRoundWinner(std::vector<Player*> winners) const
 	for (size_t i = 0; i < winners.size(); i++)
 		printTaunt(1, winners[i]);
 
-	sleep(2);
+	sleep(0);
 }
 
 void GameUI::printWinner(size_t winner) const
@@ -327,19 +339,40 @@ void GameUI::readInput()
 	std::string kInput;
 	std::cin >> kInput;
 	std::transform(kInput.begin(), kInput.end(), kInput.begin(), ::toupper);
-
+	std::cout << gameStart << std::endl;
 	input = NONE;
 	// command for the amount of players
+	
+	if (gameStart == 3){
+		std::stringstream ss(kInput);
+		ss >> timesToPlay;
+		gameStart++;
+		input = BOTS;		
+	}
+
+	if (gameStart == 2)
+	{
+		if (kInput.compare("Y") == 0)
+		{
+			gameStart++;
+			input = BOTS;
+		}
+		else if (kInput.compare("N") == 0)
+		{
+			input = NOBOTS;
+		}
+	}
+
 	if (gameStart == 1)
 	{
-	if (kInput.compare("2") == 0 || kInput.compare("3") == 0 || kInput.compare("4") == 0
-	|| kInput.compare("5") == 0|| kInput.compare("6") == 0)
-	{
-		std::stringstream ss(kInput);
-		ss >> playerNum;
-		gameStart++;
-		input = NUMS;
-	}
+		if (kInput.compare("2") == 0 || kInput.compare("3") == 0 || kInput.compare("4") == 0
+		|| kInput.compare("5") == 0|| kInput.compare("6") == 0)
+		{
+			std::stringstream ss(kInput);
+			ss >> playerNum;
+			gameStart++;
+			input = NUMS;
+		}
 	}
 
 	if (kInput.compare("PLAY") == 0)
@@ -522,7 +555,7 @@ void GameUI::printAction(Player* player) const
 		printTaunt(2, player);
 
 	// Pause for second
-	sleep(2);
+	sleep(0);
 }
 
 void GameUI::printTaunt(int state, Player* player) const
@@ -584,3 +617,7 @@ int GameUI::getPlayerNum() const
 	return playerNum;
 }
 
+int GameUI::getTimesToPlay() const
+{
+	return timesToPlay;
+}

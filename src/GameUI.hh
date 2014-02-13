@@ -33,6 +33,16 @@ public:
 	void printStart() const;
 
 	/*
+	 * Print the bot vs bot screen
+	 */
+	void printBots() const;
+
+	/*
+	 * Prompt for number of bot matches
+	 */
+	void printBotGames() const;
+
+	/*
 	 * Print the game turn screen. It has information about the players, their money, human player cards and the table cards.
 	 */
 	void printTurn(std::vector<Player*> players, Player* humanPlayer, size_t pot, std::vector<Card*> cards, size_t dealer, size_t sb, size_t bb) const;
@@ -121,12 +131,19 @@ public:
 	 */
 	int getPlayerNum() const;
 
+	/*
+	 * Return the number of bot matches to play.
+	 */
+	int getTimesToPlay() const;
+
+
 private:
-	GameUI() : input(NONE), gameStart(0), playerNum(2)
+	GameUI() : input(NONE), gameStart(0), playerNum(2), timesToPlay(1)
 	{ }
 	static GameUI* instance;
 
 	Command input;
 	size_t gameStart;
 	int playerNum;
+	int timesToPlay;
 };

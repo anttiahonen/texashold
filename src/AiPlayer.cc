@@ -20,7 +20,7 @@ Command AiPlayer::playTurn()
 
 	RiskLevel risk = evaluateRisk();
 
-	// Choose move
+	// Choose moveam
 	switch (hg)
 	{
 	case BAD:
