@@ -48,7 +48,7 @@ Command AiPlayer::playTurn()
 				move = FOLD;
 			}
 		}
-		if (ranValue < 85) {
+		if (ranValue < 87) {
 			move = CALL; //Small risk, but variance in decicions reduces the possibility of opponent deducing your cards.
 		}
 		else {
@@ -57,7 +57,7 @@ Command AiPlayer::playTurn()
 		break;
 		
 	case GOOD:
-		if (ranValue < 70) {
+		if (ranValue < 75) {
 			move = CALL;
 		}
 		else {
@@ -126,12 +126,12 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand() {
 	std::vector<double> oddsv = calculateOdds(cvv[0], 2, hvv[0]);
 	double vp = oddsv[0]/100; // Victory probalility
 	double bet = this->getBet();
-	double potOdds = callCost / ((pot - bet) + callCost);
+	double potOdds = callCost / (pot/2	 + callCost);
 	
 	//Call of the cost is zero so instead of Rate of return we use handstrength to make decicions
 	//on how to continue.
-	if (callCost == 0) {
-		std:: cout << "vp: " << vp << " Pot: " << pot << "\n";
+	if (callCost == 0 || callCost == 50) {
+		//std:: cout << "vp: " << vp << " Pot: " << pot << "\n";
 		if (vp < 0.4) return BAD;
 		if (vp < 0.6)	return AVERAGE;
 		if (vp < 0.85)	return GOOD;
@@ -140,31 +140,31 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand() {
 	
 	double RoR = vp / potOdds; //Rate of Return
 
-	std:: cout << "RoR: " << RoR << " Pot: " << pot << " Potodds: " << potOdds << " Bet: " << getBet() <<" callcost: " << callCost <<"\n";
+	//std:: cout << "RoR: " << RoR << " Pot: " << pot << " Potodds: " << potOdds << " WP: " << vp <<" callcost: " << callCost <<"\n";
 
 
 	switch (getCards().size()) {
 		
 		//These are the values that need to be iterated.
 	case 2: // Preflop
-			if (RoR < 0.8) return BAD;
-			if (RoR < 1.0)	return AVERAGE;
-			if (RoR < 1.6)	return GOOD;
+			if (RoR < 1.05) return BAD;
+			if (RoR < 1.4)	return AVERAGE;
+			if (RoR < 2.1)	return GOOD;
 			return EXCELLENT;
 	case 5: // Flop
-			if (RoR < 1.3) return BAD;
+			if (RoR < 1.25) return BAD;
 			if (RoR < 1.7)	return AVERAGE;
-			if (RoR < 2.0)	return GOOD;
+			if (RoR < 2.2)	return GOOD;
 			return EXCELLENT;
 	case 6: // Turn			
-			if (RoR < 2.0) return BAD;
-			if (RoR < 2.5)	return AVERAGE;
-			if (RoR < 3.0)	return GOOD;
+			if (RoR < 1.35) return BAD;
+			if (RoR < 1.8)	return AVERAGE;
+			if (RoR < 2.5)	return GOOD;
 			return EXCELLENT;
 	case 7: // River
-			if (RoR < 2.6) return BAD;
-			if (RoR < 2.9)	return AVERAGE;
-			if (RoR < 3.2)	return GOOD;
+			if (RoR < 1.55) return BAD;
+			if (RoR < 2.1)	return AVERAGE;
+			if (RoR < 2.8)	return GOOD;
 			return EXCELLENT;
 	}
 	throw std::logic_error( "AI's evaluateHand() method encountered a problem." );
