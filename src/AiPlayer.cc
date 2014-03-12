@@ -112,6 +112,7 @@ Command AiPlayer::playTurn() {
 AiPlayer::HandGoodness AiPlayer::evaluateHand1() {
 								
 	Game* game = Game::getInstance();
+	bool bots = game->getBotsOnly();
 	double callCost = game->getCallCost();
 	double pot =  game->getPot();
 	std::vector<int> cvv = calculateHandValue(getCards());
@@ -124,7 +125,10 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand1() {
 	//Call of the cost is zero so instead of Rate of return we use handstrength to make decicions
 	//on how to continue.
 	if (callCost == 0 || callCost == 50) {
-		mout << "Player 0: vp: " << vp << "\n";
+		if (bots == true)
+			mout << "Player 1: vp: " << vp << "\n";
+		else
+			std::cout << "Player 1: vp: " << vp << "\n";
 		if (vp < 0.4) return BAD;
 		if (vp < 0.6)	return AVERAGE;
 		if (vp < 0.85)	return GOOD;
@@ -225,6 +229,7 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand1() {
 AiPlayer::HandGoodness AiPlayer::evaluateHand2() {
 									
 	Game* game = Game::getInstance();
+	bool bots = game->getBotsOnly();
 	double callCost = game->getCallCost();
 	double pot =  game->getPot();
 	std::vector<int> cvv = calculateHandValue(getCards());
@@ -240,7 +245,10 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand2() {
 	//Call of the cost is zero so instead of Rate of return we use handstrength to make decicions
 	//on how to continue.
 	if (callCost == 0 || callCost == 50) {
-		mout << "Player 1: vp: " << vp << "\n";
+		if (bots)
+			mout << "Player 1: vp: " << vp << "\n";
+		else
+			std::cout << "Player 1: vp: " << vp << "\n";
 		if (vp < 0.4) return BAD;
 		if (vp < 0.6)	return AVERAGE;
 		if (vp < 0.85)	return GOOD;

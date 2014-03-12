@@ -1,6 +1,7 @@
 #include "GameUI.hh"
 #include "HelperTools.hh"
 #include "Ofstream.hh"
+#include "Game.hh"
 #include <algorithm>
 #include <sstream>
 #include <unistd.h>
@@ -134,9 +135,15 @@ void GameUI::printBotGames() const
 void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t pot, std::vector<Card*> cards, size_t dealer, size_t sb, size_t bb) const
 { 
 
-	mout << std::endl;
+	Game* game = Game::getInstance();
+	bool bots = game->getBotsOnly();	
 
-	mout << "Round #" << PreFlop::getInstance()->roundCounter << "\t\t";
+	GameUI::print("\n");
+
+	if (bots == true)
+		mout << "Round #" << PreFlop::getInstance()->roundCounter << "\t\t";
+	else
+		std::cout << "Round #" << PreFlop::getInstance()->roundCounter << "\t\t";
 
 	// print the players
 	std::string role = "";
@@ -147,9 +154,18 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 		} else {
 			role = " (BB) ";
 		}
-		mout << "Player " << players[i]->getId() << role << "(" << players[i]->getMoney() << "$)" << "\t";
-		if (i == players.size()-1)
-			mout << "\t pot (" << pot << "$) \n";
+
+		if (bots == true)
+			mout << "Player " << players[i]->getId() << role << "(" << players[i]->getMoney() << "$)" << "\t";
+		else
+			std::cout << "Player " << players[i]->getId() << role << "(" << players[i]->getMoney() << "$)" << "\t";
+
+		if (i == players.size()-1){
+			if (bots == true)
+				mout << "\t pot (" << pot << "$) \n";
+			else
+				std::cout << "\t pot (" << pot << "$) \n";
+		}
 	}
 	/* print the dealer and the blinds
 	for (size_t i = 0; i < players.size(); i++)
@@ -186,59 +202,60 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 
 	if (cards.size() > 0)
 	{
-		mout << "Table cards:" << std::endl;
+		GameUI::print("Table cards:\n");
+
 		for (size_t i = 0; i < cards.size(); i++)
 		{
-			mout << cards[i]->toString();
+			GameUI::print(cards[i]->toString());
 			if (i != cards.size()-1)
-				mout << "  ";
+				GameUI::print("  ");
 		}
 		std::string tabs = ((cards.size() > 4) ? "\t\t" : "\t\t");
-		mout << tabs;
+		GameUI::print(tabs);
 		std::vector<Card*> firstCards = players[0]->getHand();
 		std::vector<Card*> secondCards = players[1]->getHand();
 		for (size_t i = 0; i < firstCards.size(); i++)
 		{
-			mout << firstCards[i]->toString();
+			GameUI::print(firstCards[i]->toString());
 			if (i != firstCards.size()-1)
-				mout << "  ";
+				GameUI::print("  ");
 			else
-			mout << "\t\t\t";
+			GameUI::print("\t\t\t");
 		}
 		for (size_t i = 0; i < secondCards.size(); i++)
 		{
-			mout << secondCards[i]->toString();
+			GameUI::print(secondCards[i]->toString());
 			if (i != secondCards.size()-1)
-				mout << "  ";
+				GameUI::print("  ");
 			else
-			mout << std::endl;
+			GameUI::print("\n");
 		}		
-		mout << std::endl;
+		GameUI::print("\n");
 	} else if (players.size() > 1){
-		mout << "Table cards:" << std::endl;
-		mout << "\t\t\t";
+		GameUI::print("Table cards:\n");
+		GameUI::print("\t\t\t");
 		std::vector<Card*> firstCards = players[0]->getHand();
 		std::vector<Card*> secondCards = players[1]->getHand();
 		for (size_t i = 0; i < firstCards.size(); i++)
 		{
-			mout << firstCards[i]->toString();
+			GameUI::print(firstCards[i]->toString());
 			if (i != firstCards.size()-1)
-				mout << "  ";
+				GameUI::print("  ");
 			else
-			mout << "\t\t\t";
+			GameUI::print("\t\t\t");
 		}
 		for (size_t i = 0; i < secondCards.size(); i++)
 		{
-			mout << secondCards[i]->toString();
+			GameUI::print(secondCards[i]->toString());
 			if (i != secondCards.size()-1)
-				mout << "  ";
+				GameUI::print("  ");
 			else
-			mout << std::endl;
+				GameUI::print("\n");
 		}		
-		mout << std::endl;		
+		GameUI::print("\n");		
 	}
 
-	mout << std::endl;
+	GameUI::print("\n");
 
 }
 
@@ -254,12 +271,22 @@ void GameUI::printInput() const
 
 void GameUI::print(std::string str) const
 {
-	mout << str << std::endl;
+	Game* game = Game::getInstance();
+	bool bots = game->getBotsOnly();
+	if (bots == true)	
+		mout << str;
+	else
+		std::cout << str;
 }
 
 void GameUI::print(const char* chr) const
 {
-	mout << chr << std::endl;
+	Game* game = Game::getInstance();
+	bool bots = game->getBotsOnly();
+	if (bots == true)	
+		mout << chr;
+	else
+		std::cout << chr;
 }
 
 void GameUI::printInputError() const
@@ -280,6 +307,10 @@ void GameUI::printHelp() const
 
 void GameUI::printRoundWinner(std::vector<Player*> winners) const
 {
+
+	Game* game = Game::getInstance();
+	bool bots = game->getBotsOnly();
+
 	std::vector<Player*> active = Game::getInstance()->getActivePlayers();
 	bool showHands = active.size() > 1;
 
@@ -324,31 +355,34 @@ void GameUI::printRoundWinner(std::vector<Player*> winners) const
 				break;
 
 			}
-			mout << p->getName() << " has " << hand[0]->toString() << " " << hand[1]->toString() << " - " << outcome << std::endl;
+			if (bots == true)
+				mout << p->getName() << " has " << hand[0]->toString() << " " << hand[1]->toString() << " - " << outcome << std::endl;
+			else
+				std::cout <<p->getName() << " has " << hand[0]->toString() << " " << hand[1]->toString() << " - " << outcome << std::endl;
 		}
 	}
 
-	mout << std::endl;
+	GameUI::print("\n");
 
 	if (winners.size() > 1)
 	{
-		mout << "Winners of this round are: ";
+		GameUI::print("Winners of this round are: ");
 		for (size_t i = 0; i < winners.size(); i++)
 		{
-			mout << winners[i]->getName();
+			GameUI::print(winners[i]->getName());
 			if (i == winners.size() - 1)
-				mout << "!";
+				GameUI::print("!");
 			else if (i == winners.size() - 2)
-				mout << " and ";
+				GameUI::print(" and ");
 			else
-				mout << ", ";
+				GameUI::print(", ");
 		}
 	}
 	else
 	{
-		mout << winners[0]->getName() << " wins this round!";
+		GameUI::print(winners[0]->getName() + " wins this round!");
 	}
-	mout << std::endl << std::endl;
+	GameUI::print("\n\n");
 
 	//for (size_t i = 0; i < winners.size(); i++)
 	//	printTaunt(1, winners[i]);
@@ -357,8 +391,17 @@ void GameUI::printRoundWinner(std::vector<Player*> winners) const
 
 void GameUI::printWinner(size_t winner) const
 {
-	mout << "And the winner of the game is..... PLAYER " << winner <<", congratulations!\n";
-	mout << std::endl;
+	Game* game = Game::getInstance();
+	bool bots = game->getBotsOnly();
+	if (bots == true)
+	{
+		mout << "And the winner of the game is..... PLAYER " << winner <<", congratulations!\n";
+		mout << std::endl;
+	} else {
+		std::cout << "And the winner of the game is..... PLAYER " << winner <<", congratulations!\n";
+		std::cout << std::endl;
+	}
+
 }
 
 void GameUI::readInput()
@@ -571,6 +614,7 @@ void GameUI::printAction(Player* player) const
 
 	std::string str;
 	std::getline(ss, str);
+	str = str + "\n";
 	print(str);
 
 	//if (player->getLastCommand() == RAISE)

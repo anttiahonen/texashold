@@ -1,12 +1,13 @@
 #include <stdexcept>
 #include "Game.hh"
+#include "Ofstream.hh"
 #include "AiPlayer.hh"
 #include "HumanPlayer.hh"
 #include "StateMachine.hh"
 
 Game* Game::instance;
 
-Game::Game(size_t numOfPlayers, size_t moneyAmount,size_t smallBlind, size_t bigBlind, bool botsOnly) : smallBlind(smallBlind), bigBlind(bigBlind), highestRaise(0), botsOnly(false)
+Game::Game(size_t numOfPlayers, size_t moneyAmount,size_t smallBlind, size_t bigBlind, bool botsOnly) : smallBlind(smallBlind), bigBlind(bigBlind), highestRaise(0), botsOnly(botsOnly)
 
 {
 	srand ( time(NULL) );
