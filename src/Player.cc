@@ -89,8 +89,11 @@ void Player::call()
 /*
  * Fold
  */
-void Player::fold()
-{
+void Player::fold() {
+	Game* game = Game::getInstance();
+	if (game->getCallCost() == 200) {
+		folds += 1;
+	}
 	lastCommand = FOLD;
 	folded = true;
 	GameUI::getInstance()->printAction(this);

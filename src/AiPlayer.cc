@@ -128,8 +128,8 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand1() {
 		if (bots == true)
 			mout << "Player 1: vp: " << vp << "\n";
 		else
-			std::cout << "Player 1: vp: " << vp << "\n";
-		if (vp < 0.4) return BAD;
+			//std::cout << "Player 1: vp: " << vp << "\n";
+		if (vp < 0.35) return BAD;
 		if (vp < 0.6)	return AVERAGE;
 		if (vp < 0.85)	return GOOD;
 		return EXCELLENT;	
@@ -158,9 +158,8 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand1() {
 				return EXCELLENT;
 			case 7: // River
 				if (RoR < 1.55) return BAD;
-				if (RoR < 2.1)	return AVERAGE;
-				if (RoR < 2.8 && vp > 0.65)	return GOOD;
-				if (RoR < 2.15) return AVERAGE;	
+				if (RoR < 4.15 && vp > 0.75)	return GOOD;
+				if (RoR < 4.15) return AVERAGE;	
 				if (vp > 0.85) return EXCELLENT;
 				return GOOD;		
 		}
@@ -187,9 +186,8 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand1() {
 				return EXCELLENT;
 			case 7: // River
 				if (RoR < 1.4) return BAD;
-				if (RoR < 2.05)	return AVERAGE;
-				if (RoR < 2.45 && vp > 0.6)	return GOOD;
-				if (RoR < 2.15) return AVERAGE;	
+				if (RoR < 3.45 && vp > 0.75)	return GOOD;
+				if (RoR < 3.45) return AVERAGE;	
 				if (vp > 0.75) return EXCELLENT;
 				return GOOD;		}
 								
@@ -215,10 +213,9 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand1() {
 				return EXCELLENT;
 			case 7: // River
 				if (RoR < 1.4) return BAD;
-				if (RoR < 1.85)	return AVERAGE;
-				if (RoR < 2.15 && vp > 0.55)	return GOOD; // RoR gets easily distorted when we are at river so continue only if win percentage is preferable.
-				if (RoR < 2.15) return AVERAGE;	
-				if (vp > 0.65) return EXCELLENT;
+				if (RoR < 4.15 && vp > 0.75)	return GOOD; // RoR gets easily distorted when we are at river so continue only if win percentage is preferable.
+				if (RoR < 4.15) return AVERAGE;	
+				if (vp > 0.75) return EXCELLENT;
 				return GOOD;
 		}
 	}						
@@ -239,7 +236,7 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand2() {
 	double bet = this->getBet();
 	double potOdds = callCost / (pot/2	 + callCost);
 	Player* opponent = game->getPlayerById(0);
-	std:: cout << "call/raise ratio: " << opponent->getRaiseRatio() <<"\n";
+	//std:: cout << "call/raise ratio: " << opponent->getFoldToRaiseRatio() <<"\n";
 
 						
 	//Call of the cost is zero so instead of Rate of return we use handstrength to make decicions
@@ -248,7 +245,7 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand2() {
 		if (bots)
 			mout << "Player 1: vp: " << vp << "\n";
 		else
-			std::cout << "Player 1: vp: " << vp << "\n";
+			//std::cout << "Player 1: vp: " << vp << "\n";
 		if (vp < 0.4) return BAD;
 		if (vp < 0.6)	return AVERAGE;
 		if (vp < 0.85)	return GOOD;
