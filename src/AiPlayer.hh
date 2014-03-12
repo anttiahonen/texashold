@@ -30,9 +30,9 @@ enum HandGoodness {BAD, AVERAGE, GOOD, EXCELLENT};
 /*
  * Determines how good our hand is approximately.
  */
-HandGoodness evaluateHand();
-
 HandGoodness evaluateHand1();
+
+HandGoodness evaluateHand2();
 
 
 };

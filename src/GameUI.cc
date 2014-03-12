@@ -107,7 +107,7 @@ void GameUI::clearScreen()
 void GameUI::printWelcome() const
 {
 	std::cout << "\033[0;31m******************************" << std::endl;
-	std::cout << "*   \033[0;33mTEXAS HOLD'EM GROUP 03   \033[0;31m*" << std::endl;
+	std::cout << "*   \033[0;33mTEXAS HOLD'EM   \033[0;31m*" << std::endl;
 	std::cout << "******************************\033[0m" << std::endl;
 	std::cout << "Welcome to the Texas Hold'Em game.\nType \"HELP\" for commands or just start playing by writing \"PLAY\"!" << std::endl; 
 }

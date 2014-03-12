@@ -44,7 +44,6 @@ void Player::setBet(size_t newbet)
 	bet += delta;
 }
 
-
 /*
  * Raise / bet
  */
@@ -61,6 +60,8 @@ void Player::raise()
 	setBet(getBet() + game->getRaiseCost());
 	game->setHighestRaise(200);
 	lastCommand = RAISE;
+	raises+=1;
+	turns +=1;
 	GameUI::getInstance()->printAction(this);
 }
 
@@ -77,6 +78,7 @@ void Player::call()
 	else
 		lastCommand = CALL;
 	GameUI::getInstance()->printAction(this);
+	turns+=1;
 }
 
 /*
