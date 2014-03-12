@@ -10,19 +10,19 @@ std::string Card::toString() const
 	switch (color)
 	{
 	case SPADES:
-		ss << "\033[0;34m";
+		//ss << "\033[0;34m";
 		ss << "♠";
 		break;
 	case HEARTS:
-		ss << "\033[0;31m";
+		//ss << "\033[0;31m";
 		ss << "♥";
 		break;
 	case DIAMONDS:
-		ss << "\033[0;31m";
+		//ss << "\033[0;31m";
 		ss << "♦";
 		break;
 	case CLUBS:
-		ss << "\033[0;34m";
+		//ss << "\033[0;34m";
 		ss << "♣";
 		break;
 	}
@@ -49,7 +49,7 @@ std::string Card::toString() const
 		break;
 	}
 
-	ss << "\033[0m";
+	//ss << "\033[0m";
 
 	std::string temp;
 	ss >> temp;

@@ -1,5 +1,6 @@
 #include "GameUI.hh"
 #include "HelperTools.hh"
+#include "Ofstream.hh"
 #include <algorithm>
 #include <sstream>
 #include <unistd.h>
@@ -132,30 +133,25 @@ void GameUI::printBotGames() const
 
 void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t pot, std::vector<Card*> cards, size_t dealer, size_t sb, size_t bb) const
 { 
-	std::cout << std::endl;
 
-	std::cout << "Round #" << PreFlop::getInstance()->roundCounter << "\tBlinds: ($"
-		<< Game::getInstance()->getSmallBlind() << " / $" << Game::getInstance()->getBigBlind()
-		<< ")" << std::endl;
+	mout << std::endl;
+
+	mout << "Round #" << PreFlop::getInstance()->roundCounter << "\t\t";
 
 	// print the players
+	std::string role = "";
 	for (size_t i = 0; i < players.size(); i++)
 	{
-		if (players[i]->getId() == 0)
-			std::cout << "Human P" << "\t\t";
-		else
-			std::cout << "Player " << players[i]->getId() << "\t";
+		if (players[i]->getId() == dealer){
+			role = " (D) ";
+		} else {
+			role = " (BB) ";
+		}
+		mout << "Player " << players[i]->getId() << role << "(" << players[i]->getMoney() << "$)" << "\t";
 		if (i == players.size()-1)
-			std::cout << "pot\n";
+			mout << "\t pot (" << pot << "$) \n";
 	}
-	// print the money
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		std::cout << players[i]->getMoney() << "$\t\t";
-		if (i == players.size()-1)
-			std::cout << pot << "$\n";
-	}
-	// print the dealer and the blinds
+	/* print the dealer and the blinds
 	for (size_t i = 0; i < players.size(); i++)
 	{
 		if (players[i]->getId() == dealer)
@@ -168,9 +164,9 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 			std::cout << "\t\t";
 		if (i == players.size()-1)
 			std::cout << std::endl << std::endl;
-	}
+	}*/
 	// print the player cards
-	if (humanPlayer != NULL)
+	/*if (humanPlayer != NULL)
 	{
 		std::cout << "Your cards:" << std::endl;
 		std::vector<Card*> humanCards = humanPlayer->getHand();
@@ -183,31 +179,72 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 			else
 			std::cout << std::endl;
 		}
-	}
+	}*/
 	// print the table cards
+
+	
 
 	if (cards.size() > 0)
 	{
-		std::cout << "Table cards:" << std::endl;
+		mout << "Table cards:" << std::endl;
 		for (size_t i = 0; i < cards.size(); i++)
 		{
-			std::cout << cards[i]->toString();
+			mout << cards[i]->toString();
 			if (i != cards.size()-1)
-				std::cout << "  ";
+				mout << "  ";
 		}
-
-		std::cout << std::endl;
+		std::string tabs = ((cards.size() > 4) ? "\t\t" : "\t\t");
+		mout << tabs;
+		std::vector<Card*> firstCards = players[0]->getHand();
+		std::vector<Card*> secondCards = players[1]->getHand();
+		for (size_t i = 0; i < firstCards.size(); i++)
+		{
+			mout << firstCards[i]->toString();
+			if (i != firstCards.size()-1)
+				mout << "  ";
+			else
+			mout << "\t\t\t";
+		}
+		for (size_t i = 0; i < secondCards.size(); i++)
+		{
+			mout << secondCards[i]->toString();
+			if (i != secondCards.size()-1)
+				mout << "  ";
+			else
+			mout << std::endl;
+		}		
+		mout << std::endl;
+	} else if (players.size() > 1){
+		mout << "Table cards:" << std::endl;
+		mout << "\t\t\t";
+		std::vector<Card*> firstCards = players[0]->getHand();
+		std::vector<Card*> secondCards = players[1]->getHand();
+		for (size_t i = 0; i < firstCards.size(); i++)
+		{
+			mout << firstCards[i]->toString();
+			if (i != firstCards.size()-1)
+				mout << "  ";
+			else
+			mout << "\t\t\t";
+		}
+		for (size_t i = 0; i < secondCards.size(); i++)
+		{
+			mout << secondCards[i]->toString();
+			if (i != secondCards.size()-1)
+				mout << "  ";
+			else
+			mout << std::endl;
+		}		
+		mout << std::endl;		
 	}
 
-	std::cout << std::endl;
+	mout << std::endl;
 
-	sleep(0);
 }
 
-void GameUI::printExit() const
+void GameUI::printExit(size_t winner) const
 {
-	std::string exit = "The game has ended. Hope you enjoyed this superawesome Texas Hold'Em group03 game";
-	std::cout << exit << std::endl;
+	std::cout << "The game has ended. Winner is Player " << winner << std::endl;
 }
 
 void GameUI::printInput() const
@@ -217,12 +254,12 @@ void GameUI::printInput() const
 
 void GameUI::print(std::string str) const
 {
-	std::cout << str << std::endl;
+	mout << str << std::endl;
 }
 
 void GameUI::print(const char* chr) const
 {
-	std::cout << chr << std::endl;
+	mout << chr << std::endl;
 }
 
 void GameUI::printInputError() const
@@ -287,51 +324,41 @@ void GameUI::printRoundWinner(std::vector<Player*> winners) const
 				break;
 
 			}
-			std::cout << p->getName() << " has " << hand[0]->toString() << " " << hand[1]->toString() << " - " << outcome << std::endl;
+			mout << p->getName() << " has " << hand[0]->toString() << " " << hand[1]->toString() << " - " << outcome << std::endl;
 		}
 	}
 
-	std::cout << "\033[0;33m" << std::endl;
+	mout << std::endl;
 
 	if (winners.size() > 1)
 	{
-		std::cout << "Winners of this round are: ";
+		mout << "Winners of this round are: ";
 		for (size_t i = 0; i < winners.size(); i++)
 		{
-			std::cout << winners[i]->getName();
+			mout << winners[i]->getName();
 			if (i == winners.size() - 1)
-				std::cout << "!";
+				mout << "!";
 			else if (i == winners.size() - 2)
-				std::cout << " and ";
+				mout << " and ";
 			else
-				std::cout << ", ";
+				mout << ", ";
 		}
 	}
 	else
 	{
-		std::cout << winners[0]->getName() << " wins this round!";
+		mout << winners[0]->getName() << " wins this round!";
 	}
-	std::cout << "\033[0m" << std::endl << std::endl;
+	mout << std::endl << std::endl;
 
-	for (size_t i = 0; i < winners.size(); i++)
-		printTaunt(1, winners[i]);
+	//for (size_t i = 0; i < winners.size(); i++)
+	//	printTaunt(1, winners[i]);
 
-	sleep(0);
 }
 
 void GameUI::printWinner(size_t winner) const
 {
-	if (winner == 0)
-		std::cout << "And the winner is..... YOU, almighty HUMAN PLAYER, congratulations! ";
-	else
-	{
-		std::cout << "And the winner is..... PLAYER " << winner <<", congratulations!\n";
-
-		printTaunt(1, Game::getInstance()->getPlayerById(winner));
-
-		std::cout << std::endl;
-		std::cout << std::endl;
-	}
+	mout << "And the winner of the game is..... PLAYER " << winner <<", congratulations!\n";
+	mout << std::endl;
 }
 
 void GameUI::readInput()
@@ -503,14 +530,11 @@ void GameUI::printAction(Player* player) const
 {
 	std::stringstream ss;
 
-	if (player->getId() == 0)
-		ss << "Human P";
-	else
-		ss << "Player " << player->getId();
+	ss << "Player " << player->getId();
 
 	if (player->getMoney() == 0)
 	{
-		ss << "\033[0;32m";
+		//ss << "\033[0;32m";
 		ss << " is all in";
 	}
 	else
@@ -518,30 +542,30 @@ void GameUI::printAction(Player* player) const
 		switch (player->getLastCommand())
 		{
 		case RAISE:
-			ss << "\033[0;33m";
+			//ss << "\033[0;33m";
 			ss << " raises";
 			break;
 		case CALL:
-			ss << "\033[0;32m";
+			//ss << "\033[0;32m";
 			ss << " calls";
 			break;
 		case CHECK:
-			ss << "\033[0;32m";
+			//ss << "\033[0;32m";
 			ss << " checks";
 			break;
 		case FOLD:
-			ss << "\033[0;31m";
+			//ss << "\033[0;31m";
 			ss << " folds";
 			break;
 		case NONE:
-			ss << "\033[0;31m";
+			//ss << "\033[0;31m";
 			ss << " has folded";
 			break;
 		default:
 			throw std::logic_error( "player->getLastCommand() returned something weird." );
 		}
 	}
-	ss << "\033[0m";
+	//ss << "\033[0m";
 
 	ss << " ($" << player->getBet() << "/$" << player->getMoney() << ")";
 
@@ -549,13 +573,11 @@ void GameUI::printAction(Player* player) const
 	std::getline(ss, str);
 	print(str);
 
-	if (player->getLastCommand() == RAISE)
-		printTaunt(0, player);
-	else if (player->getLastCommand() == FOLD)
-		printTaunt(2, player);
+	//if (player->getLastCommand() == RAISE)
+		//printTaunt(0, player);
+	//else if (player->getLastCommand() == FOLD)
+		//printTaunt(2, player);
 
-	// Pause for second
-	sleep(0);
 }
 
 void GameUI::printTaunt(int state, Player* player) const
@@ -568,21 +590,21 @@ void GameUI::printTaunt(int state, Player* player) const
 			if (rand() % 4 < 1)
 				return;
 
-			std::cout << player->getName() << ": \"" << raise[ rand() % RAISE_SIZE ] << "\"" << std::endl;
+			mout << player->getName() << ": \"" << raise[ rand() % RAISE_SIZE ] << "\"" << std::endl;
 			break;
 		case 1: // WIN
-			std::cout << player->getName() << ": \"" << win[ rand() % WIN_SIZE ] << "\"" << std::endl;
+			mout << player->getName() << ": \"" << win[ rand() % WIN_SIZE ] << "\"" << std::endl;
 			break;
 		case 2: // FOLD
 			if (rand() % 2 == 1)
 				return;
-			std::cout << player->getName() << ": \"" << fold[ rand() % FOLD_SIZE ] << "\"" << std::endl;
+			mout << player->getName() << ": \"" << fold[ rand() % FOLD_SIZE ] << "\"" << std::endl;
 			break;
 		case 3: // EXIT
-			std::cout << player->getName() << " has run out of money and leaves the game! ("
+			mout << player->getName() << " has run out of money and leaves the game! ("
 				<< Game::getInstance()->getPlayers().size() << " players remaining)\n\n";
 
-			std::cout << player->getName() << ": \"" << exitTaunts[ rand() % EXIT_SIZE ] << "\"" << std::endl;
+			//mout << player->getName() << ": \"" << exitTaunts[ rand() % EXIT_SIZE ] << "\"" << std::endl;
 			break;
 		}
 	}
