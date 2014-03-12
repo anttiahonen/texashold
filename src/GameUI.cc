@@ -134,28 +134,22 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 { 
 	std::cout << std::endl;
 
-	std::cout << "Round #" << PreFlop::getInstance()->roundCounter << "\tBlinds: ($"
-		<< Game::getInstance()->getSmallBlind() << " / $" << Game::getInstance()->getBigBlind()
-		<< ")" << std::endl;
+	std::cout << "Round #" << PreFlop::getInstance()->roundCounter << "\t\t";
 
 	// print the players
+	std::string role = "";
 	for (size_t i = 0; i < players.size(); i++)
 	{
-		if (players[i]->getId() == 0)
-			std::cout << "Human P" << "\t\t";
-		else
-			std::cout << "Player " << players[i]->getId() << "\t";
+		if (players[i]->getId() == dealer){
+			role = " (D) ";
+		} else {
+			role = " (BB) ";
+		}
+		std::cout << "Player " << players[i]->getId() << role << "(" << players[i]->getMoney() << "$)" << "\t";
 		if (i == players.size()-1)
-			std::cout << "pot\n";
+			std::cout << "\t pot (" << pot << "$) \n";
 	}
-	// print the money
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		std::cout << players[i]->getMoney() << "$\t\t";
-		if (i == players.size()-1)
-			std::cout << pot << "$\n";
-	}
-	// print the dealer and the blinds
+	/* print the dealer and the blinds
 	for (size_t i = 0; i < players.size(); i++)
 	{
 		if (players[i]->getId() == dealer)
@@ -168,9 +162,9 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 			std::cout << "\t\t";
 		if (i == players.size()-1)
 			std::cout << std::endl << std::endl;
-	}
+	}*/
 	// print the player cards
-	if (humanPlayer != NULL)
+	/*if (humanPlayer != NULL)
 	{
 		std::cout << "Your cards:" << std::endl;
 		std::vector<Card*> humanCards = humanPlayer->getHand();
@@ -183,8 +177,10 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 			else
 			std::cout << std::endl;
 		}
-	}
+	}*/
 	// print the table cards
+
+	
 
 	if (cards.size() > 0)
 	{
@@ -195,8 +191,49 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 			if (i != cards.size()-1)
 				std::cout << "  ";
 		}
-
+		std::string tabs = ((cards.size() > 4) ? "\t" : "\t\t");
+		std::cout << tabs;
+		std::vector<Card*> firstCards = players[0]->getHand();
+		std::vector<Card*> secondCards = players[1]->getHand();
+		for (size_t i = 0; i < firstCards.size(); i++)
+		{
+			std::cout << firstCards[i]->toString();
+			if (i != firstCards.size()-1)
+				std::cout << "  ";
+			else
+			std::cout << "\t\t\t";
+		}
+		for (size_t i = 0; i < secondCards.size(); i++)
+		{
+			std::cout << secondCards[i]->toString();
+			if (i != secondCards.size()-1)
+				std::cout << "  ";
+			else
+			std::cout << std::endl;
+		}		
 		std::cout << std::endl;
+	} else if (players.size() > 1){
+		std::cout << "Table cards:" << std::endl;
+		std::cout << "\t\t\t";
+		std::vector<Card*> firstCards = players[0]->getHand();
+		std::vector<Card*> secondCards = players[1]->getHand();
+		for (size_t i = 0; i < firstCards.size(); i++)
+		{
+			std::cout << firstCards[i]->toString();
+			if (i != firstCards.size()-1)
+				std::cout << "  ";
+			else
+			std::cout << "\t\t\t";
+		}
+		for (size_t i = 0; i < secondCards.size(); i++)
+		{
+			std::cout << secondCards[i]->toString();
+			if (i != secondCards.size()-1)
+				std::cout << "  ";
+			else
+			std::cout << std::endl;
+		}		
+		std::cout << std::endl;		
 	}
 
 	std::cout << std::endl;
