@@ -69,6 +69,14 @@ public:
 	void updateDealer();
 
 	/*
+	 * Return if the game is with bots only
+	 */
+	bool getBotsOnly() const
+	{
+		return botsOnly;
+	}	
+
+	/*
 	 * Return the amount of money player needs to pay to call.
 	 */
 	size_t getCallCost() const;
@@ -162,7 +170,7 @@ public:
 	void resetDeck();
 
 private:
-	Game(size_t numOfPlayers =2, size_t moneyAmount =5000, size_t smallBlind =50, size_t bigBlind =100, bool botsOnly =false);
+	Game(size_t numOfPlayers =2, size_t moneyAmount =5000, size_t smallBlind =50, size_t bigBlind =100, bool botsOnly =true);
 
 	static Game* instance;
 
