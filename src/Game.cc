@@ -23,7 +23,7 @@ Game::Game(size_t numOfPlayers, size_t moneyAmount,size_t smallBlind, size_t big
 	} else {
 		for (size_t i = 0; i < numOfPlayers; i++)
 		{
-			std::cout << "creating ai player for bots" << std::endl;
+			//std::cout << "creating ai player for bots" << std::endl;
 			Player* p = new AiPlayer(i, moneyAmount);
 			players.push_back(p);
 		}

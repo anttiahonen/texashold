@@ -422,10 +422,10 @@ void End::execute()
 	{
 		GameUI::getInstance()->printWinner(players[0]->getId());
 
-		GameUI::getInstance()->printExit();
+		GameUI::getInstance()->printExit(players[0]->getId());
 
 	}
-	std::cout << "change to newgame" << std::endl;
+
 	PreFlop::getInstance()->roundCounter = 0;
 	StateMachine::getInstance()->changeState(PreFlop::getInstance());
 

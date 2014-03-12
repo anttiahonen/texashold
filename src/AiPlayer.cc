@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include "AiPlayer.hh"
+#include "Ofstream.hh"
 #include "HelperTools.hh"
 #include "Game.hh"
 #include "GameUI.hh"
@@ -137,7 +138,7 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand() {
 	//Call of the cost is zero so instead of Rate of return we use handstrength to make decicions
 	//on how to continue.
 	if (callCost == 0 || callCost == 50) {
-		std:: cout << "Tekoäly 2: vp: " << vp << " Pot: " << pot << "\n";
+		mout << "Player 0: vp: " << vp << "\n";
 		if (vp < 0.4) return BAD;
 		if (vp < 0.6)	return AVERAGE;
 		if (vp < 0.85)	return GOOD;
@@ -194,7 +195,7 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand1() {
 	//Call of the cost is zero so instead of Rate of return we use handstrength to make decicions
 	//on how to continue.
 	if (callCost == 0 || callCost == 50) {
-		std:: cout << "Tekoäly 1: vp: " << vp << " Pot: " << pot << "\n";
+		mout << "Player 1: vp: " << vp << "\n";
 		if (vp < 0.4) return BAD;
 		if (vp < 0.6)	return AVERAGE;
 		if (vp < 0.85)	return GOOD;

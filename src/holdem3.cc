@@ -1,4 +1,5 @@
 #include "Game.hh"
+#include <cstdio>
 #include <iostream>
 #include "GameUI.hh"
 #include "HelperTools.hh"
@@ -8,6 +9,7 @@
 
 int main(void)
 {
+
 	GameUI* gameUI = GameUI::getInstance();
 	gameUI->clearScreen();
 	gameUI->printWelcome();
@@ -51,6 +53,18 @@ int main(void)
 
 	int stopper = gameUI->getTimesToPlay();
 
+	/*std::stringstream gameFileName;
+	gameFileName << "game.txt";
+	std::string gameFileStr;
+	gameFileName >> gameFileStr;
+
+	std::ofstream gameFile;
+	gameFile.open(gameFileStr);
+	std::stringstream ss;*/
+
+	int p1Wins = 0;
+	int p2Wins = 0;
+
 	for (int index = 0; index < stopper; index++){
 
 		initCardDag();
@@ -86,15 +100,20 @@ int main(void)
 		        {
 		                gameUI->printTurn(game->getPlayers(), game->getPlayerById(0), game->getPot(), game->getTable(), game->getDealerId(), game->getSmallBlindId(), game->getBigBlindId());
 		                gameUI->printWinner(game->getPlayers()[0]->getId());
-		                gameUI->printExit();
+		                gameUI->printExit(game->getPlayers()[0]->getId());
+				if (game->getPlayers()[0]->getId() == 0)
+					p1Wins++;
+				else
+					p2Wins++;
 				checker = 1;
 		        }
-		}
 
-		sleep(3);
+		}
 
 	}
 
+	std::cout << "PLayer 0 wins: " << p1Wins << std::endl;
+	std::cout << "PLayer 1 wins: " << p2Wins << std::endl;
 
 }
 
