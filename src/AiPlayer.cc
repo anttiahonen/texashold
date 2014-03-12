@@ -19,7 +19,6 @@ Command AiPlayer::playTurn() {
 	HandGoodness hg;
 	//This is for bot vs. bot configuration.
 	//it selects AI 'evaluateHand1 for firstplayer and evaluatehand2 for second player
-								
 	if (this->getId() == 0) {
 		hg = evaluateHand1();
 	}
@@ -125,67 +124,13 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand1() {
 	//Call of the cost is zero so instead of Rate of return we use handstrength to make decicions
 	//on how to continue.
 	if (callCost == 0 || callCost == 50) {
-		mout << "Player 1: vp: " << vp << "\n";
+		mout << "Player 0: vp: " << vp << "\n";
 		if (vp < 0.4) return BAD;
 		if (vp < 0.6)	return AVERAGE;
 		if (vp < 0.85)	return GOOD;
 		return EXCELLENT;	
 	}
 	double RoR = vp / potOdds; //Rate of Return
-	//std:: cout << "RoR: " << RoR << " Pot: " << pot << " Potodds: " << potOdds << " WP: " << vp <<" callcost: " << callCost <<"\n";
-	switch (getCards().size()) {
-	//These are the values that need to be iterated.
-								
-		case 2: // Preflop
-			if (RoR < 0.8) return BAD;
-			if (RoR < 1.1)	return AVERAGE;
-			if (RoR < 1.35)	return GOOD;
-			return EXCELLENT;
-		case 5: // Flop
-			if (RoR < 1.0) return BAD;
-			if (RoR < 1.25)	return AVERAGE;
-			if (RoR < 1.55)	return GOOD;
-			return EXCELLENT;
-		case 6: // Turn			
-			if (RoR < 1.2) return BAD;
-			if (RoR < 1.55)	return AVERAGE;
-			if (RoR < 1.95)	return GOOD;
-			return EXCELLENT;
-		case 7: // River
-			if (RoR < 1.4) return BAD;
-			if (RoR < 1.85)	return AVERAGE;
-			if (RoR < 2.15)	return GOOD;
-			return EXCELLENT;
-	}
-							
-	throw std::logic_error( "AI's evaluateHand() method encountered a problem." );
-}
-								
-// http://fi.pokernews.com/poker-tools/poker-odds-calculator.htm
-AiPlayer::HandGoodness AiPlayer::evaluateHand2() {
-									
-	Game* game = Game::getInstance();
-	double callCost = game->getCallCost();
-	double pot =  game->getPot();
-	std::vector<int> cvv = calculateHandValue(getCards());
-	std::vector<int> hvv = calculateHandValue(getHand());
-	std::vector<double> oddsv = calculateOdds(cvv[0], 2, hvv[0]);
-	double vp = oddsv[0]/100; // Victory probalility
-	double bet = this->getBet();
-	double potOdds = callCost / (pot/2	 + callCost);
-						
-	//Call of the cost is zero so instead of Rate of return we use handstrength to make decicions
-	//on how to continue.
-	if (callCost == 0 || callCost == 50) {
-		mout << "Player 1: vp: " << vp << "\n";
-		if (vp < 0.4) return BAD;
-		if (vp < 0.6)	return AVERAGE;
-		if (vp < 0.85)	return GOOD;
-		return EXCELLENT;	
-	}
-				
-	double RoR = vp / potOdds; //Rate of Return
-				
 	//std:: cout << "RoR: " << RoR << " Pot: " << pot << " Potodds: " << potOdds << " WP: " << vp <<" callcost: " << callCost <<"\n";
 	if (this->getMoney() <= 600 ) {
 								
@@ -195,7 +140,7 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand2() {
 			case 2: // Preflop
 				if (RoR < 1.05) return BAD;
 				if (RoR < 1.4)	return AVERAGE;
-				if (RoR < 2.1)	return GOOD;
+				if (RoR < 1.7)	return GOOD;
 				return EXCELLENT;
 			case 5: // Flop
 				if (RoR < 1.25) return BAD;
@@ -210,10 +155,13 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand2() {
 			case 7: // River
 				if (RoR < 1.55) return BAD;
 				if (RoR < 2.1)	return AVERAGE;
-				if (RoR < 2.8)	return GOOD;
-				return EXCELLENT;
+				if (RoR < 2.8 && vp > 0.65)	return GOOD;
+				if (RoR < 2.15) return AVERAGE;	
+				if (vp > 0.85) return EXCELLENT;
+				return GOOD;		
 		}
 	}
+	
 	if (this->getMoney() <= 1600 ) {
 		switch (getCards().size()) {
 		//These are the values that need to be iterated.
@@ -236,11 +184,13 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand2() {
 			case 7: // River
 				if (RoR < 1.4) return BAD;
 				if (RoR < 2.05)	return AVERAGE;
-				if (RoR < 2.45)	return GOOD;
-				return EXCELLENT;
-		}
+				if (RoR < 2.45 && vp > 0.6)	return GOOD;
+				if (RoR < 2.15) return AVERAGE;	
+				if (vp > 0.75) return EXCELLENT;
+				return GOOD;		}
 								
 	}
+	
 	else {
 		switch (getCards().size()) {
 		//These are the values that need to be iterated.
@@ -262,8 +212,125 @@ AiPlayer::HandGoodness AiPlayer::evaluateHand2() {
 			case 7: // River
 				if (RoR < 1.4) return BAD;
 				if (RoR < 1.85)	return AVERAGE;
-				if (RoR < 2.15)	return GOOD;
+				if (RoR < 2.15 && vp > 0.55)	return GOOD; // RoR gets easily distorted when we are at river so continue only if win percentage is preferable.
+				if (RoR < 2.15) return AVERAGE;	
+				if (vp > 0.65) return EXCELLENT;
+				return GOOD;
+		}
+	}						
+	throw std::logic_error( "AI's evaluateHand() method encountered a problem." );
+}
+								
+// http://fi.pokernews.com/poker-tools/poker-odds-calculator.htm
+AiPlayer::HandGoodness AiPlayer::evaluateHand2() {
+									
+	Game* game = Game::getInstance();
+	double callCost = game->getCallCost();
+	double pot =  game->getPot();
+	std::vector<int> cvv = calculateHandValue(getCards());
+	std::vector<int> hvv = calculateHandValue(getHand());
+	std::vector<double> oddsv = calculateOdds(cvv[0], 2, hvv[0]);
+	double vp = oddsv[0]/100; // Victory probalility
+	double bet = this->getBet();
+	double potOdds = callCost / (pot/2	 + callCost);
+	Player* opponent = game->getPlayerById(0);
+	std:: cout << "call/raise ratio: " << opponent->getRaiseRatio() <<"\n";
+
+						
+	//Call of the cost is zero so instead of Rate of return we use handstrength to make decicions
+	//on how to continue.
+	if (callCost == 0 || callCost == 50) {
+		mout << "Player 1: vp: " << vp << "\n";
+		if (vp < 0.4) return BAD;
+		if (vp < 0.6)	return AVERAGE;
+		if (vp < 0.85)	return GOOD;
+		return EXCELLENT;	
+	}
+				
+	double RoR = vp / potOdds; //Rate of Return
+				
+	//std:: cout << "RoR: " << RoR << " Pot: " << pot << " Potodds: " << potOdds << " WP: " << vp <<" callcost: " << callCost <<"\n";
+	if (this->getMoney() <= 600 ) {
+								
+		switch (getCards().size()) {
+		//These are the values that need to be iterated.
+										
+			case 2: // Preflop
+				if (RoR < 1.05) return BAD;
+				if (RoR < 1.4)	return AVERAGE;
+				if (RoR < 1.7)	return GOOD;
 				return EXCELLENT;
+			case 5: // Flop
+				if (RoR < 1.25) return BAD;
+				if (RoR < 1.7)	return AVERAGE;
+				if (RoR < 2.2)	return GOOD;
+				return EXCELLENT;
+			case 6: // Turn			
+				if (RoR < 1.35) return BAD;
+				if (RoR < 1.8)	return AVERAGE;
+				if (RoR < 2.5)	return GOOD;
+				return EXCELLENT;
+			case 7: // River
+				if (RoR < 1.55) return BAD;
+				if (RoR < 4.15 && vp > 0.75)	return GOOD;
+				if (RoR < 4.15) return AVERAGE;	
+				if (vp > 0.85) return EXCELLENT;
+				return GOOD;		
+		}
+	}
+	
+	if (this->getMoney() <= 1600 ) {
+		switch (getCards().size()) {
+		//These are the values that need to be iterated.
+							
+			case 2: // Preflop
+				if (RoR < 1.0) return BAD;
+				if (RoR < 1.3)	return AVERAGE;
+				if (RoR < 1.95)	return GOOD;
+				return EXCELLENT;
+			case 5: // Flop
+				if (RoR < 1.1) return BAD;
+				if (RoR < 1.55)	return AVERAGE;
+				if (RoR < 2.0)	return GOOD;
+				return EXCELLENT;
+			case 6: // Turn			
+				if (RoR < 1.2) return BAD;
+				if (RoR < 1.65)	return AVERAGE;
+				if (RoR < 2.05)	return GOOD;
+				return EXCELLENT;
+			case 7: // River
+				if (RoR < 1.4) return BAD;
+				if (RoR < 3.45 && vp > 0.75)	return GOOD;
+				if (RoR < 3.45) return AVERAGE;	
+				if (vp > 0.75) return EXCELLENT;
+				return GOOD;		}
+								
+	}
+	
+	else {
+		switch (getCards().size()) {
+		//These are the values that need to be iterated.
+			case 2: // Preflop
+				if (RoR < 0.8) return BAD;
+				if (RoR < 1.1)	return AVERAGE;
+				if (RoR < 1.35)	return GOOD;
+				return EXCELLENT;
+			case 5: // Flop
+				if (RoR < 1.0) return BAD;
+				if (RoR < 1.25)	return AVERAGE;
+				if (RoR < 1.55)	return GOOD;
+				return EXCELLENT;
+			case 6: // Turn			
+				if (RoR < 1.2) return BAD;
+				if (RoR < 1.55)	return AVERAGE;
+				if (RoR < 1.95)	return GOOD;
+				return EXCELLENT;
+			case 7: // River
+				if (RoR < 1.4) return BAD;
+				if (RoR < 4.15 && vp > 0.75)	return GOOD; // RoR gets easily distorted when we are at river so continue only if win percentage is preferable.
+				if (RoR < 4.15) return AVERAGE;	
+				if (vp > 0.75) return EXCELLENT;
+				return GOOD;
 		}
 	}
 	throw std::logic_error( "AI's evaluateHand() method encountered a problem." );

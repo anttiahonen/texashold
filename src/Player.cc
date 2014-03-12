@@ -56,7 +56,10 @@ void Player::raise()
 		call();
 		return;
 	}
-
+	//Increase the reraise counter.
+	if (game->getCallCost() == 200) {
+		reraise += 1;
+	}
 	setBet(getBet() + game->getRaiseCost());
 	game->setHighestRaise(200);
 	lastCommand = RAISE;
@@ -77,6 +80,8 @@ void Player::call()
 		lastCommand = CHECK;
 	else
 		lastCommand = CALL;
+		//increase the call counter
+		calls += 1;
 	GameUI::getInstance()->printAction(this);
 	turns+=1;
 }

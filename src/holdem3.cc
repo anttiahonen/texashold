@@ -74,9 +74,9 @@ int main(void)
 
 		if (gameUI->getLatestInput() == BOTS)
 		{
-			game = Game::startGame(gameUI->getPlayerNum(), 2000, 50, 100, true);
+			game = Game::startGame(gameUI->getPlayerNum(), 5000, 50, 100, true);
 		} else {
-			game = Game::startGame(gameUI->getPlayerNum(), 2000, 50, 100, false);
+			game = Game::startGame(gameUI->getPlayerNum(), 5000, 50, 100, false);
 		}
 
 		stateMachine = StateMachine::getInstance();
