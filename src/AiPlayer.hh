@@ -32,6 +32,9 @@ enum HandGoodness {BAD, AVERAGE, GOOD, EXCELLENT};
  */
 HandGoodness evaluateHand();
 
+HandGoodness evaluateHand1();
+
+
 };
 
 #endif
