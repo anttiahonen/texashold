@@ -26,7 +26,7 @@ std::string Card::toString() const
 		ss << "♣";
 		break;
 	}
-	
+	ss << " ";
 	switch (value)
 	{
 	case 10:
@@ -52,7 +52,7 @@ std::string Card::toString() const
 	//ss << "\033[0m";
 
 	std::string temp;
-	ss >> temp;
+	temp = ss.str();
 	return temp;
 }
 
