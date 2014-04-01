@@ -213,7 +213,7 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 		std::string tabs = ((cards.size() > 4) ? "\t\t" : "\t\t");
 		GameUI::print(tabs);
 		std::vector<Card*> firstCards = players[0]->getHand();
-		//std::vector<Card*> secondCards = players[1]->getHand();
+		std::vector<Card*> secondCards = players[1]->getHand();
 		for (size_t i = 0; i < firstCards.size(); i++)
 		{
 			GameUI::print(firstCards[i]->toString());
@@ -221,21 +221,24 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 				GameUI::print("  ");
 			else
 			GameUI::print("\t\t\t");
-		}/*
-		for (size_t i = 0; i < secondCards.size(); i++)
-		{
-			GameUI::print(secondCards[i]->toString());
-			if (i != secondCards.size()-1)
-				GameUI::print("  ");
-			else
-			GameUI::print("\n");
-		}*/		
+		}
+		if (bots == true){
+			for (size_t i = 0; i < secondCards.size(); i++)
+			{
+				GameUI::print(secondCards[i]->toString());
+				if (i != secondCards.size()-1)
+					GameUI::print("  ");
+				else
+				GameUI::print("\n");
+			}
+		}
+		
 		GameUI::print("\n");
 	} else if (players.size() > 1){
 		GameUI::print("Table cards:\n");
 		GameUI::print("\t\t\t");
 		std::vector<Card*> firstCards = players[0]->getHand();
-		//std::vector<Card*> secondCards = players[1]->getHand();
+		std::vector<Card*> secondCards = players[1]->getHand();
 		for (size_t i = 0; i < firstCards.size(); i++)
 		{
 			GameUI::print(firstCards[i]->toString());
@@ -243,15 +246,17 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 				GameUI::print("  ");
 			else
 			GameUI::print("\t\t\t");
-		}/*
-		for (size_t i = 0; i < secondCards.size(); i++)
-		{
-			GameUI::print(secondCards[i]->toString());
-			if (i != secondCards.size()-1)
-				GameUI::print("  ");
-			else
-				GameUI::print("\n");
-		}		*/
+		}
+		if (bots == true){
+			for (size_t i = 0; i < secondCards.size(); i++)
+			{
+				GameUI::print(secondCards[i]->toString());
+				if (i != secondCards.size()-1)
+					GameUI::print("  ");
+				else
+					GameUI::print("\n");
+			}
+		}
 		GameUI::print("\n");		
 	}
 
