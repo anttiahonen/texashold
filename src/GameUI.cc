@@ -259,9 +259,9 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 
 }
 
-void GameUI::printExit(size_t winner) const
+void GameUI::printExit(size_t winner, int arr []) const
 {
-	std::cout << "The game has ended. Winner is Player " << winner << std::endl;
+	std::cout << "The game has ended. Winner is Player " << winner << ". Player 0 hands won: " << arr[0] << ". Player 1 hands won: " << arr[1] << std::endl;
 }
 
 void GameUI::printInput() const

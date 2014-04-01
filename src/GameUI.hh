@@ -50,7 +50,7 @@ public:
 	/*
 	 * Print the game ending screen.
 	 */
-	void printExit(size_t winner) const;
+	void printExit(size_t winner, int arr []) const;
 
 	/*
 	 * Print the game input line.
