@@ -200,6 +200,7 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 
 	
 
+
 	if (cards.size() > 0)
 	{
 		GameUI::print("Table cards:\n");
@@ -232,8 +233,9 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 				GameUI::print("\n");
 			}
 		}
-		
+
 		GameUI::print("\n");
+
 	} else if (players.size() > 1){
 		GameUI::print("Table cards:\n");
 		GameUI::print("\t\t\t");

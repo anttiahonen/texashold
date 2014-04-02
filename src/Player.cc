@@ -56,10 +56,6 @@ void Player::raise()
 		call();
 		return;
 	}
-	//Increase the reraise counter.
-	if (game->getCallCost() == 200) {
-		reraise += 1;
-	}
 	setBet(getBet() + game->getRaiseCost());
 	game->setHighestRaise(200);
 	lastCommand = RAISE;
@@ -91,9 +87,11 @@ void Player::call()
  */
 void Player::fold() {
 	Game* game = Game::getInstance();
+	// Increase the fold counter only if it happens after the opponent has raised
 	if (game->getCallCost() == 200) {
 		folds += 1;
 	}
+	turns += 1;
 	lastCommand = FOLD;
 	folded = true;
 	GameUI::getInstance()->printAction(this);

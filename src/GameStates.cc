@@ -341,30 +341,31 @@ void Win::execute()
 	}
 
 	GameUI::getInstance()->printRoundWinner(winners);
-	if (winners.size() > 1) // draw
-	{
-		size_t size = winners.size();
 
-		for (size_t i = 0; i < size; i++)
-		{
-			winners[i]->giveMoney(game->getPot() / size);
-			if (winners[i]->getId() == 0){
-				Win::handsWon[0] = Win::handsWon[0] + 1;
-			} else {
-				Win::handsWon[1] = Win::handsWon[1] + 1;
-			}
-		}
-			
-	}
-	else
-	{
-		winners[0]->giveMoney(game->getPot());
-		if (winners[0]->getId() == 0){
-			Win::handsWon[0] = Win::handsWon[0] + 1;
-		} else {
+ 	if (winners.size() > 1) // draw
+  	{
+  		size_t size = winners.size();
+  
+  		for (size_t i = 0; i < size; i++)
+ 		{
+  			winners[i]->giveMoney(game->getPot() / size);
+ 			if (winners[i]->getId() == 0){
+ 				Win::handsWon[0] = Win::handsWon[0] + 1;
+ 			} else {
+ 				Win::handsWon[1] = Win::handsWon[1] + 1;
+ 			}
+ 		}
+ 			
+  	}
+  	else
+  	{
+  		winners[0]->giveMoney(game->getPot());
+ 		if (winners[0]->getId() == 0){
+ 			Win::handsWon[0] = Win::handsWon[0] + 1;
+ 		} else {
 			Win::handsWon[1] = Win::handsWon[1] + 1;
-		}
-	}
+ 		}
+  	}
 
 	std::vector<Player*> players = game->getPlayers();
 
@@ -433,11 +434,9 @@ void End::execute()
 	if (players.size() == 1)
 	{
 		GameUI::getInstance()->printWinner(players[0]->getId());
-		//size_t arr [2] = {0 , 0};
+		//GameUI::getInstance()->printExit(players[0]->getId());
 
 	}
-
-	//GameUI::getInstance()->printExit(players[0]->getId());
 
 	PreFlop::getInstance()->roundCounter = 0;
 	Win::getInstance()->handsWon[0] = 0;
