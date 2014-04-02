@@ -17,7 +17,7 @@ public:
  * Constructor
  * Parameters are player's ID and start money.
  */
-Player(size_t id, size_t money) : id(id), money(money), bet(0), folded(false), lastCommand(NONE), raises(0), turns(0), calls(0), reraise(0), folds(0)
+Player(size_t id, size_t money) : id(id), money(money), bet(0), folded(false), lastCommand(NONE), raises(0), turns(0), calls(0), folds(0)
 {}
 
 /*
@@ -74,18 +74,11 @@ size_t getMoney()
 	return money;
 }
 
-double getRaiseRatio() {
-	if (turns + calls > 0) {
-		return (raises) / (turns + calls);
-	}
-	return 0;
+double getRaises() {
+	return raises;
 }
-
-double getFoldToRaiseRatio() {
-	if (raises > 0) {
-		return folds / raises;
-	}
-	return 0;
+double getFolds() {
+	return folds;
 }
 
 
@@ -179,7 +172,6 @@ Command lastCommand;
 double raises;
 double turns;
 double calls;
-double reraise;
 double folds;
 };
 
