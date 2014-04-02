@@ -100,7 +100,8 @@ int main(void)
 		        {
 		                gameUI->printTurn(game->getPlayers(), game->getPlayerById(0), game->getPot(), game->getTable(), game->getDealerId(), game->getSmallBlindId(), game->getBigBlindId());
 		                gameUI->printWinner(game->getPlayers()[0]->getId());
-		                gameUI->printExit(game->getPlayers()[0]->getId());
+				int arr [2] = { Win::getInstance()->handsWon[0], Win::getInstance()->handsWon[1]};
+		                gameUI->printExit(game->getPlayers()[0]->getId(), arr);
 				if (game->getPlayers()[0]->getId() == 0)
 					p1Wins++;
 				else

@@ -97,6 +97,8 @@ public:
 
 	virtual void exit();
 
+	int handsWon [2] = {0, 0};
+
 private:
 	Win()
 	{ }

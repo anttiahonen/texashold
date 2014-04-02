@@ -200,6 +200,7 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 
 	
 
+
 	if (cards.size() > 0)
 	{
 		GameUI::print("Table cards:\n");
@@ -213,7 +214,7 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 		std::string tabs = ((cards.size() > 4) ? "\t\t" : "\t\t");
 		GameUI::print(tabs);
 		std::vector<Card*> firstCards = players[0]->getHand();
-		//std::vector<Card*> secondCards = players[1]->getHand();
+		std::vector<Card*> secondCards = players[1]->getHand();
 		for (size_t i = 0; i < firstCards.size(); i++)
 		{
 			GameUI::print(firstCards[i]->toString());
@@ -221,21 +222,24 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 				GameUI::print("  ");
 			else
 			GameUI::print("\t\t\t");
-		}/*
-		for (size_t i = 0; i < secondCards.size(); i++)
-		{
-			GameUI::print(secondCards[i]->toString());
-			if (i != secondCards.size()-1)
-				GameUI::print("  ");
-			else
-			GameUI::print("\n");
-		}*/		
+		}
+		if (bots == true){
+			for (size_t i = 0; i < secondCards.size(); i++)
+			{
+				GameUI::print(secondCards[i]->toString());
+				if (i != secondCards.size()-1)
+					GameUI::print("  ");
+				else
+				GameUI::print("\n");
+			}
+		}
+
 		GameUI::print("\n");
 	} else if (players.size() > 1){
 		GameUI::print("Table cards:\n");
 		GameUI::print("\t\t\t");
 		std::vector<Card*> firstCards = players[0]->getHand();
-		//std::vector<Card*> secondCards = players[1]->getHand();
+		std::vector<Card*> secondCards = players[1]->getHand();
 		for (size_t i = 0; i < firstCards.size(); i++)
 		{
 			GameUI::print(firstCards[i]->toString());
@@ -243,15 +247,17 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 				GameUI::print("  ");
 			else
 			GameUI::print("\t\t\t");
-		}/*
-		for (size_t i = 0; i < secondCards.size(); i++)
-		{
-			GameUI::print(secondCards[i]->toString());
-			if (i != secondCards.size()-1)
-				GameUI::print("  ");
-			else
-				GameUI::print("\n");
-		}		*/
+		}
+		if (bots == true){
+			for (size_t i = 0; i < secondCards.size(); i++)
+			{
+				GameUI::print(secondCards[i]->toString());
+				if (i != secondCards.size()-1)
+					GameUI::print("  ");
+				else
+					GameUI::print("\n");
+			}
+		}
 		GameUI::print("\n");		
 	}
 
@@ -259,9 +265,9 @@ void GameUI::printTurn(std::vector<Player*> players, Player* humanPlayer, size_t
 
 }
 
-void GameUI::printExit(size_t winner) const
+void GameUI::printExit(size_t winner, int arr []) const
 {
-	std::cout << "The game has ended. Winner is Player " << winner << std::endl;
+	std::cout << "The game has ended. Winner is Player " << winner << ". Player 0 hands won: " << arr[0] << ". Player 1 hands won: " << arr[1] << std::endl;
 }
 
 void GameUI::printInput() const
