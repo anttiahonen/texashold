@@ -4,7 +4,7 @@
 #include "GameUI.hh"
 #include "HelperTools.hh"
 
-#define BLIND_UPDATE_INTERVAL 10
+#define BLIND_UPDATE_INTERVAL 100000
 
 /*
  *	Init singletons
